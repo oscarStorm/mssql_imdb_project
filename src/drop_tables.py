@@ -11,7 +11,7 @@ cursor.execute("drop table if exists title_directors")
 
 cursor.execute("drop table if exists title_genres")
 
-cursor.execute("drop table if exists titles ")
+cursor.execute("drop table if exists titles")
 
 cursor.execute("drop table if exists persons")
 

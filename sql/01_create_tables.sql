@@ -11,7 +11,7 @@ CREATE TABLE titles (
 
 CREATE TABLE persons (
     nconst VARCHAR(20) PRIMARY KEY,
-    primary_name VARCHAR(255) NOT NULL,
+    primary_name VARCHAR(255) NULL,
     birth_year INT,
     death_year INT
 );
