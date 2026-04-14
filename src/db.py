@@ -19,14 +19,28 @@ def get_connection(user, password):
 # and the path to the sql file that is being
 # executed.
 def execute_sql_file(conn, path):
-
-    # opens the sql file, read the file into a string
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-8") as f:
         sql = f.read()
-    # create cursor (cursor executes the sql command)
+
     cursor = conn.cursor()
-    # execute the command
-    # (sends the SQL string to to SQL server)
-    cursor.execute(sql)
-    # commits the changes to the database
+
+    # Split SQL batches on lines containing only GO
+    batches = []
+    current_batch = []
+
+    for line in sql.splitlines():
+        if line.strip().upper() == "GO":
+            if current_batch:
+                batches.append("\n".join(current_batch).strip())
+                current_batch = []
+        else:
+            current_batch.append(line)
+
+    if current_batch:
+        batches.append("\n".join(current_batch).strip())
+
+    for batch in batches:
+        if batch:
+            cursor.execute(batch)
+
     conn.commit()
