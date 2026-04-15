@@ -31,7 +31,7 @@ def search_movies():
             END,
             primary_title
         """,
-        (f"%{term}%", term, f"{term}%"),
+        (f"{term}%", term, f"{term}%"),
     )
 
     rows = cursor.fetchall()
@@ -59,7 +59,7 @@ def search_persons():
         ORDER BY 
         CASE WHEN primary_name = ? THEN 0 ELSE 1 END
         """,
-        (f"%{term}%", term),
+        (f"{term}%", term),
     )
 
     rows = cursor.fetchall()
