@@ -20,12 +20,18 @@ def search_movies():
 
     cursor.execute(
         """
-        SELECT TOP 20 tconst, primary_title, start_year, runtime_minutes, genres
+        SELECT TOP 20 tconst, primary_title, start_year, runtime_minutes, genres, directors
         FROM vw_movie_search
         WHERE primary_title LIKE ?
-        ORDER BY primary_title
+        ORDER BY 
+            CASE
+                WHEN primary_title = ? THEN 0
+                WHEN primary_title LIKE ? THEN 1
+                ELSE 2
+            END,
+            primary_title
         """,
-        (f"%{term}%",),
+        (f"%{term}%", term, f"{term}%"),
     )
 
     rows = cursor.fetchall()

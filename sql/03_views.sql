@@ -1,26 +1,27 @@
-DROP VIEW IF EXISTS vw_movie_search;
-GO  
-DROP VIEW IF EXISTS vw_person_search;
-GO
-
-CREATE VIEW vw_movie_search AS
+CREATE OR ALTER VIEW vw_movie_search AS
 SELECT
     t.tconst,
     t.primary_title,
     t.start_year,
     t.runtime_minutes,
-    STRING_AGG(g.genre, ', ') AS genres
-FROM titles t
-LEFT JOIN title_genres g
-    ON t.tconst = g.tconst
-GROUP BY
-    t.tconst,
-    t.primary_title,
-    t.start_year,
-    t.runtime_minutes;
-GO  
 
-CREATE VIEW vw_person_search AS
+    (
+        SELECT STRING_AGG(g.genre, ', ')
+        FROM title_genres g
+        WHERE g.tconst = t.tconst
+    ) AS genres,
+
+    (
+        SELECT STRING_AGG(p.primary_name, ', ')
+        FROM title_directors d
+        JOIN persons p
+            ON d.nconst = p.nconst
+        WHERE d.tconst = t.tconst
+    ) AS directors
+
+FROM titles t;
+GO
+CREATE OR ALTER VIEW vw_person_search AS
 SELECT
     n.nconst,
     n.primary_name,
@@ -28,4 +29,3 @@ SELECT
     n.death_year
 FROM persons n;
 GO
-
